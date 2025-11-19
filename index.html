@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>简单储值管理系统</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont;
+      max-width: 400px;
+      margin: 40px auto;
+      text-align: center;
+    }
+    .balance {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    .admin-panel {
+      margin-top: 20px;
+      display: none;
+    }
+    input[type="number"] {
+      padding: 6px 10px;
+      font-size: 16px;
+      width: 150px;
+    }
+    button {
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      margin: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>储值余额</h1>
+  <div class="balance" id="balanceDisplay">0</div>
+
+  <button id="adminLoginBtn">管理员登录</button>
+
+  <div class="admin-panel" id="adminPanel">
+    <p>修改余额：</p>
+    <input type="number" id="balanceInput">
+    <button id="saveBtn">保存</button>
+    <button id="logoutBtn">退出管理员模式</button>
+  </div>
+
+  <script>
+    const ADMIN_PASSWORD = "1234"; // 在这里改管理员密码
+
+    const balanceDisplay = document.getElementById("balanceDisplay");
+    const adminLoginBtn = document.getElementById("adminLoginBtn");
+    const adminPanel = document.getElementById("adminPanel");
+    const balanceInput = document.getElementById("balanceInput");
+    const saveBtn = document.getElementById("saveBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    function loadBalance() {
+      const stored = localStorage.getItem("balance");
+      const value = stored !== null ? Number(stored) : 0;
+      balanceDisplay.textContent = value;
+      balanceInput.value = value;
+    }
+
+    function saveBalance(value) {
+      localStorage.setItem("balance", String(value));
+      loadBalance();
+    }
+
+    adminLoginBtn.addEventListener("click", () => {
+      const pwd = prompt("请输入管理员密码：");
+      if (pwd === ADMIN_PASSWORD) {
+        adminPanel.style.display = "block";
+        adminLoginBtn.style.display = "none";
+      } else {
+        alert("密码错误");
+      }
+    });
+
+    saveBtn.addEventListener("click", () => {
+      const value = Number(balanceInput.value);
+      if (Number.isNaN(value)) {
+        alert("请输入有效数字");
+        return;
+      }
+      saveBalance(value);
+      alert("余额已更新");
+    });
+
+    logoutBtn.addEventListener("click", () => {
+      adminPanel.style.display = "none";
+      adminLoginBtn.style.display = "inline-block";
+    });
+
+    loadBalance();
+  </script>
+</body>
+</html>
